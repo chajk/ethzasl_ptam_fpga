@@ -1,4 +1,4 @@
-ptam_fpga
+ptam_sw
 ============
 
 [Updated on Jul/15th]

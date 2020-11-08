@@ -71,6 +71,10 @@ void KeyFrame::MakeKeyFrame_Lite(BasicImage<CVD::byte> &im)
 		if(i == 3)
 			pFASTFunc(lev.im, lev.vCorners, pPars.Thres_lvl3+thrs[i]);
 
+		for (int j = 0; j < lev.vCorners.size(); j++) {
+			cout << "lev[" << i << "], num [" << j << "]" << lev.vCorners.at(j) << endl;
+		}
+
 		if (pPars.AdaptiveThrs)
 		{
 			buff = lev.vCorners.size()-pPars.AdaptiveThrsMult*pPars.MaxPatchesPerFrame/pow(2.0,i);

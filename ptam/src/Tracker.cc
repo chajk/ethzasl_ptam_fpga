@@ -24,6 +24,8 @@
 #include <math.h>
 #include <vector>
 
+#include "GL/freeglut.h"
+
 using namespace CVD;
 using namespace std;
 using namespace GVars3;
@@ -204,6 +206,24 @@ void Tracker::TrackFrame(Image<CVD::byte> &imFrame, bool bDraw)
     if(mbDraw)
       RenderGrid();
 
+    {/* 
+      glutInitWindowSize(500, 500);
+      glBegin(GL_QUADS); //4점이 하나의 사각형을 구성한다. 반시계 방향으로 4점의 vertex를 지정해줘야 한다.
+      glVertex2f(-0.5f, -0.5f);    // x, y
+      glVertex2f(0.5f, -0.5f);
+      glVertex2f(0.5f, 0.5f);
+      glVertex2f(-0.5f, 0.5f);
+      glEnd();
+     */
+      glBegin(GL_POLYGON);
+        glVertex3f(-0.5, -0.5, 0.0);
+        glVertex3f(0.5, -0.5, 0.0);
+        glVertex3f(0.5, 0.5, 0.0);
+        glVertex3f(-0.5, 0.5, 0.0);
+      glEnd();
+      glFlush(); 
+    }
+
     //Weiss{
     if (mAutoreset)
       Reset();
@@ -332,7 +352,15 @@ void Tracker::RenderGrid()
       glVertex(mProjVertices[j][i]);
     glEnd();
   };
-
+/*
+    glutInitWindowSize(500, 500);
+    glBegin(GL_QUADS); //4점이 하나의 사각형을 구성한다. 반시계 방향으로 4점의 vertex를 지정해줘야 한다.
+    glVertex2f(-0.5f, -0.5f);    // x, y
+    glVertex2f(0.5f, -0.5f);
+    glVertex2f(0.5f, 0.5f);
+    glVertex2f(-0.5f, 0.5f);
+    glEnd();
+*/
   glLineWidth(1);
   glColor3f(1,0,0);
 }
@@ -623,6 +651,16 @@ int Tracker::TrailTracking_Advance()
       glVertex(LevelZeroPos(trail.irInitialPos, level));
       if(bFound) glColor3f(1,0,0);
       glVertex(LevelZeroPos(trail.irCurrentPos, level));
+
+/*      glColor3f(1.0f, 0.0f, 0.0f);
+      glBegin(GL_POLYGON);
+         glVertex3f(-0.5, -0.5, 0.0);
+         glVertex3f(0.5, -0.5, 0.0);
+         glVertex3f(0.5, 0.5, 0.0);
+         glVertex3f(-0.5, 0.5, 0.0);
+      glEnd();
+      //glFlush();
+*/
     }
     if(!bFound) // Erase from list of trails if not found this frame.
     {

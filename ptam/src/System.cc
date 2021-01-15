@@ -361,11 +361,19 @@ void System::publishPoseAndInfo(const std_msgs::Header & header)
         fps = 200;
       last_time = header.stamp.toSec();
 
+<<<<<<< HEAD
       /* adding trail_info */
       CVD::Image<TooN::Vector<2> > & grid = mpTracker->ComputeGrid();
       std::list<Trail> & trails = mpTracker->getTrails();
       bool dGrid = mpTracker->getTrailTrackingComplete();
       bool dTrails = mpTracker->getTrailTrackingStarted();
+=======
+      /* adding trail info */
+      CVD::Image<TooN::Vector<2> > & grid = mpTracker->ComputeGrid();
+      std::list<Trail> & trails = mpTracker->getTrails();
+      bool dGrid = mpTracker->getTrailTrackingComplete();
+      bool dTrails = mpTracker->getTrailTrackingStarted();      
+>>>>>>> 1ca38e62ac9c46911a3bb700c8c3231131829459
 
       msg_info->header = header;
       msg_info->fps = fps;
@@ -375,7 +383,11 @@ void System::publishPoseAndInfo(const std_msgs::Header & header)
       //msg_info->mapViewerMessage = mpMapViewer->GetMessageForUser();
       msg_info->keyframes = mpMap->vpKeyFrames.size();
       msg_info->drawGrid = dGrid;
+<<<<<<< HEAD
       msg_info->drawTrails = dTrails;
+=======
+
+>>>>>>> 1ca38e62ac9c46911a3bb700c8c3231131829459
       pub_info_.publish(msg_info);
     }
   };

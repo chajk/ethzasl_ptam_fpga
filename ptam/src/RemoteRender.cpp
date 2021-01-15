@@ -24,6 +24,8 @@
 #include <sys/types.h>
 #include <pwd.h>
 
+#include <ptam_com/ptam_info.h>
+
 using namespace std;
 
 static void destroyNode(GtkWidget *widget, gpointer data)
@@ -73,7 +75,7 @@ public:
 
   void imageCallback(const sensor_msgs::ImageConstPtr& msg)
   {
-     std::cout << "imageCallback called" <<endl;
+     //std::cout << "imageCallback called" <<endl;
     
      cv_bridge::CvImageConstPtr cv_ptr;
      try
@@ -127,6 +129,14 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr & msg)
 
 }
 
+void infoCallback(const ptam_com::ptam_infoPtr & msg) 
+{
+   std::cout <<"infoCallback called" << endl;
+
+   bool drawGrid = msg->drawGrid;
+   std::cout <<"drawGrid: " << drawGrid << std::endl;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -145,6 +155,8 @@ int main(int argc, char** argv)
 
    ros::Subscriber poseInfo = n.subscribe("vslam/pose", 10, poseCallback);
    //ros::Subscriber sub_path = n.subscribe("vslam/pose",1,&pathCallback);
+
+   ros::Subscriber ptamInfo = n.subscribe("vslam/info", 10, infoCallback);
 
    ros::Publisher key_pub = n.advertise<std_msgs::String> ("vslam/key_pressed", 10);
    std_msgs::StringPtr msg(new std_msgs::String);

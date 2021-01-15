@@ -361,13 +361,21 @@ void System::publishPoseAndInfo(const std_msgs::Header & header)
         fps = 200;
       last_time = header.stamp.toSec();
 
+      /* adding trail_info */
+      CVD::Image<TooN::Vector<2> > & grid = mpTracker->ComputeGrid();
+      std::list<Trail> & trails = mpTracker->getTrails();
+      bool dGrid = mpTracker->getTrailTrackingComplete();
+      bool dTrails = mpTracker->getTrailTrackingStarted();
+
       msg_info->header = header;
       msg_info->fps = fps;
       msg_info->mapQuality = mpMap->bGood;
       msg_info->trackingQuality = mpTracker->getTrackingQuality();
       msg_info->trackerMessage = mpTracker->GetMessageForUser();
-      //      msg_info->mapViewerMessage = mpMapViewer->GetMessageForUser();
+      //msg_info->mapViewerMessage = mpMapViewer->GetMessageForUser();
       msg_info->keyframes = mpMap->vpKeyFrames.size();
+      msg_info->drawGrid = dGrid;
+      msg_info->drawTrails = dTrails;
       pub_info_.publish(msg_info);
     }
   };

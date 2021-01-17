@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 {
    char key = 0;  
 
-   1glutInit(&argc, argv);  //GLUT 초기화
+   glutInit(&argc, argv);  //GLUT 초기화
 
    ros::init(argc, argv, "remote_render", ros::init_options::AnonymousName);
    ros::NodeHandle nh;

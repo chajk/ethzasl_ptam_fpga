@@ -151,7 +151,7 @@ add_dependencies(ptam_visualizer DEPS ${${PROJECT_NAME}_EXPORTED_TARGETS}})
 add_dependencies(ptam_visualizer ${PROJECT_NAME}_gencfg)
 target_link_libraries(ptam_visualizer ${catkin_LIBRARIES})
 
-add_executable(remote_render src/RemoteRender.cpp)
+add_executable(remote_render src/RemoteRender.cpp  src/Params.cpp include/ptam/Params.h)
 add_dependencies(remote_render DEPS ${${PROJECT_NAME}_EXPORTED_TARGETS}})
-target_link_libraries(remote_render ${GTK_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(remote_render ${PTAM_LIBRARIES} ${GTK_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
 

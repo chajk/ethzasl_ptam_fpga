@@ -286,7 +286,7 @@ void System::publishPoseAndInfo(const std_msgs::Header & header)
     scale = 1;
   }
 
-  if (mpTracker->getTrackingQuality() && mpMap->IsGood())
+  //if (mpTracker->getTrackingQuality() && mpMap->IsGood())
   {
     TooN::SE3<double> pose = mpTracker->GetCurrentPose();
     //world in the camera frame

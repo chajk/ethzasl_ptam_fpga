@@ -9,10 +9,13 @@
 #include "ptam/MapPoint.h"
 #include "ptam/TrackerData.h"
 //}
+#include <time.h>
+
 
 using namespace CVD;
 using namespace std;
 //using namespace GVars3;
+int framecnt = 0;
 
 void KeyFrame::MakeKeyFrame_Lite(BasicImage<CVD::byte> &im)
 {
@@ -24,6 +27,13 @@ void KeyFrame::MakeKeyFrame_Lite(BasicImage<CVD::byte> &im)
 	// adaptive thresholds
 	static short thrs[4]={0,0,0,0};
 	double buff;
+        clock_t t;
+
+        framecnt++;
+        if (framecnt % 10 == 0) {
+           t = clock();
+           printf("%f, %d\n", ((float)t)/CLOCKS_PER_SEC, framecnt);
+        }
 
 	// First, copy out the image data to the pyramid's zero level.
 	aLevels[0].im.resize(im.size());
@@ -71,9 +81,9 @@ void KeyFrame::MakeKeyFrame_Lite(BasicImage<CVD::byte> &im)
 		if(i == 3)
 			pFASTFunc(lev.im, lev.vCorners, pPars.Thres_lvl3+thrs[i]);
 
-		for (int j = 0; j < lev.vCorners.size(); j++) {
+		/*for (int j = 0; j < lev.vCorners.size(); j++) {
 			cout << "lev[" << i << "], num [" << j << "]" << lev.vCorners.at(j) << endl;
-		}
+		}*/
 
 		if (pPars.AdaptiveThrs)
 		{

@@ -20,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
 )
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.4 REQUIRED)
 
 generate_dynamic_reconfigure_options(cfg/PTAMVisualizerParams.cfg cfg/PtamParams.cfg)
 
@@ -28,15 +28,15 @@ generate_dynamic_reconfigure_options(cfg/PTAMVisualizerParams.cfg cfg/PtamParams
 catkin_package(CATKIN_DEPENDS roscpp dynamic_reconfigure std_msgs image_transport dynamic_reconfigure sensor_msgs ptam_com tf visualization_msgs cv_bridge)
 
 set(PTAM_SOURCE_FILES         
-	src/GLWindow2.cc       
-	src/main.cc      
-	src/MapViewer.cc 
-	src/ATANCamera.cc          
-	src/GLWindowMenu.cc    
-	src/Map.cc       
-	src/MiniPatch.cc    
-	src/ShiTomasi.cc         
-	src/Tracker.cc
+  src/GLWindow2.cc       
+  src/main.cc      
+  src/MapViewer.cc 
+  src/ATANCamera.cc          
+  src/GLWindowMenu.cc    
+  src/Map.cc       
+  src/MiniPatch.cc    
+  src/ShiTomasi.cc         
+  src/Tracker.cc
   src/Bundle.cc                 
   src/HomographyInit.cc  
   src/MapMaker.cc  
@@ -96,6 +96,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/thirdparty/gvars3/include 
   ${PROJECT_SOURCE_DIR}/thirdparty/agast/include
   ${catkin_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIRS} 
 )  
 
 link_directories(
@@ -104,10 +105,11 @@ link_directories(
   ${PROJECT_SOURCE_DIR}/thirdparty/agast/lib
 )
 
-set(PTAM_LIBRARIES GL glut cvd GVars3_headless agast blas lapack)
+set(PTAM_LIBRARIES GL GLU cvd GVars3_headless agast blas lapack)
 
 add_definitions(-DCVD_HAVE_TOON)
 add_definitions(-DKF_REPROJ)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Release)
 
 # PTAM executable
@@ -151,7 +153,48 @@ add_dependencies(ptam_visualizer DEPS ${${PROJECT_NAME}_EXPORTED_TARGETS}})
 add_dependencies(ptam_visualizer ${PROJECT_NAME}_gencfg)
 target_link_libraries(ptam_visualizer ${catkin_LIBRARIES})
 
-add_executable(remote_render src/RemoteRender.cpp  src/Params.cpp include/ptam/Params.h)
+
+# For REMOTE RENDER
+SET("OpenCV_DIR" "$ENV{HOME}/opencv_dev_install/opencv/build")
+
+find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  image_transport
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+)
+
+find_package(OpenCV 3.4 REQUIRED)
+find_package(OpenGL REQUIRED)
+
+catkin_package()
+
+#Removing ROS default opencv include path 
+set (catkin_INCLUDE_DIRS /opt/ros/kinetic/include;/opt/ros/kinetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp;/usr/include)
+        
+#Removing ROS default opencv library path
+set (catkin_LIBRARIES /opt/ros/kinetic/lib/libcv_bridge.so;/opt/ros/kinetic/lib/libimage_transport.so;/opt/ros/kinetic/lib/libmessage_filters.so;/usr/lib/x86_64-linux-gnu/libtinyxml2.so;/opt/ros/kinetic/lib/libclass_loader.so;/usr/lib/libPocoFoundation.so;/usr/lib/x86_64-linux-gnu/libdl.so;/opt/ros/kinetic/lib/libroslib.so;/opt/ros/kinetic/lib/librospack.so;/usr/lib/x86_64-linux-gnu/libpython2.7.so;/usr/lib/x86_64-linux-gnu/libboost_program_options.so;/usr/lib/x86_64-linux-gnu/libtinyxml.so;/opt/ros/kinetic/lib/libroscpp.so;/usr/lib/x86_64-linux-gnu/libboost_filesystem.so;/usr/lib/x86_64-linux-gnu/libboost_signals.so;/opt/ros/kinetic/lib/librosconsole.so;/opt/ros/kinetic/lib/librosconsole_log4cxx.so;/opt/ros/kinetic/lib/librosconsole_backend_interface.so;/usr/lib/x86_64-linux-gnu/liblog4cxx.so;/usr/lib/x86_64-linux-gnu/libboost_regex.so;/opt/ros/kinetic/lib/libxmlrpcpp.so;/opt/ros/kinetic/lib/libroscpp_serialization.so;/opt/ros/kinetic/lib/librostime.so;/opt/ros/kinetic/lib/libcpp_common.so;/usr/lib/x86_64-linux-gnu/libboost_system.so;/usr/lib/x86_64-linux-gnu/libboost_thread.so;/usr/lib/x86_64-linux-gnu/libboost_chrono.so;/usr/lib/x86_64-linux-gnu/libboost_date_time.so;/usr/lib/x86_64-linux-gnu/libboost_atomic.so;/usr/lib/x86_64-linux-gnu/libpthread.so;/usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+)
+
+
+include_directories( 
+  ${catkin_INCLUDE_DIRS} 
+  ${OPENGL_INCLUDE_DIRS} 
+  ${OpenCV_DIR}
+)
+
+link_directories(
+  ${OpenCV_DIR}/lib
+)
+
+add_executable(remote_render src/RemoteRender.cpp  src/Params.cpp)
 add_dependencies(remote_render DEPS ${${PROJECT_NAME}_EXPORTED_TARGETS}})
-target_link_libraries(remote_render ${PTAM_LIBRARIES} ${GTK_LIBRARIES} ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(remote_render 
+  ${catkin_LIBRARIES} 
+  ${OpenCV_LIBS}
+  ${PTAM_LIBRARIES} 
+  ${GTK_LIBRARIES} 
+)
 

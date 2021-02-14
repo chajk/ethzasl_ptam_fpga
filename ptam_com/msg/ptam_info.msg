@@ -7,4 +7,3 @@ string      mapViewerMessage
 string      trackerMessage
 bool        drawGrid
 bool        drawTrails
-
